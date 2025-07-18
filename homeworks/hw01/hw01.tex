@@ -1,0 +1,168 @@
+\documentclass{article}
+
+\title{Cybersecurity - Homework \#1}
+\author{Vlad Turno (1835365)}
+\usepackage{tcolorbox}
+\usepackage{listings}
+
+\begin{document}
+
+\maketitle
+
+\section*{1) Introduction}
+In cryptography, frequency analysis is a technique that studies the number of occurrences in a given ciphertext in order to get the plaintext, thanks to the fact that in written language certain characters - such as vowels - occur in certain percentages (or at least in a meaningful speech).\\This technique is efficient for decripting substitution ciphers, where the encoding of a message consists in a direct correspondence between a plaintext character and an encrypted one.\\Now consider an example of ciphertext encrypted by substitution: 
+
+\begin{tcolorbox} [title=I.ct]
+PIFFMKMQI'YRKJKPQMKDJ RKJKPXAKZQXVRKNGJMXZ'KXZKTHRKVTYRRTKAQZZ
+JKPRKJKPXAKDJZKVQDRKFJMKMQIKAQTKDIFKQZKMQ'KSJORKMQIKPXAKFXVAYJ
+ORK XO XZ'KMQIYKOJZKJGGKQLRYKTHRKNGJORKVXZAXZ'
+\end{tcolorbox}
+
+\section*{2) Frequency Analysis}
+With a simple C program it is possible to read the file and count how many times a certain character occurs within the ciphertext and print the result (C source code following):\\
+
+character: K occurrences: 35 frequency 20.58\%
+
+character: R occurrences: 13 frequency 07.64\%
+
+character: J occurrences: 13 frequency 07.64\%
+
+character: Q occurrences: 12 frequency 07.05\%
+
+character: X occurrences: 11 frequency 06.47\%
+
+character: Z occurrences: 11 frequency 06.47\%
+
+character: M occurrences: 09 frequency 05.29\%
+
+character: A occurrences: 07 frequency 04.11\%
+
+character: P occurrences: 06 frequency 03.52\%
+
+character: I occurrences: 06 frequency 03.52\%
+
+character: F occurrences: 05 frequency 02.94\%
+
+character: ' occurrences: 05 frequency 02.94\%
+
+character: V occurrences: 05 frequency 02.94\%
+
+character: T occurrences: 05 frequency 02.94\%
+
+character: O occurrences: 05 frequency 02.94\%
+
+character: Y occurrences: 05 frequency 02.94\%
+
+character: D occurrences: 04 frequency 02.35\%
+
+character: G occurrences: 04 frequency 02.35\%
+
+character:   occurrences: 03 frequency 01.74\%
+
+character: N occurrences: 02 frequency 01.17\%
+
+character: H occurrences: 02 frequency 01.17\%
+
+character: S occurrences: 01 frequency 00.58\%
+
+character: L occurrences: 01 frequency 00.58\%
+
+\lstset{
+  language=C,                     
+  numbers=left,                
+  stepnumber=1,                       
+  numbersep=5pt,                  
+  backgroundcolor=\color{white},  
+  showspaces=false,               
+  showstringspaces=false,         
+  showtabs=false,               
+  tabsize=2,                      
+  captionpos=b,                  
+  breaklines=true,               
+  breakatwhitespace=true,     
+  title=\lstname,             
+}
+\lstinputlisting{frequencyAnalyzer.c}
+
+\section*{3) Decryption Attempt}
+After asking the internet what is the average percentage of the A-Z and " " (space) character occurrence it is possible to operate a substitution with another simple C program:\\
+
+character A frequency 8.17\%
+
+character B frequency 1.49\%
+
+character C frequency 2.78\%
+
+character D frequency 4.25\%
+
+character E frequency 12.70\%
+
+character F frequency 2.23\%
+
+character G frequency 2.02\%
+
+character H frequency 6.09\%
+
+character I frequency 6.97\%
+
+character J frequency 0.15\%
+
+character K frequency 0.77\%
+
+character L frequency 4.03\%
+
+character M frequency 2.41\%
+
+character N frequency 6.75\%
+
+character O frequency 7.51\%
+
+character P frequency 1.93\%
+
+character Q frequency 0.10\%
+
+character R frequency 5.99\%
+
+character S frequency 6.33\%
+
+character T frequency 9.06\%
+
+character U frequency 2.76\%
+
+character V frequency 0.98\%
+
+character W frequency 2.36\%
+
+character X frequency 0.15\%
+
+character Y frequency 1.97\%
+
+character Z frequency 0.07\%
+
+character " " frequency 17\%
+
+\lstset{
+  language=C,                     
+  numbers=left,                
+  stepnumber=1,                       
+  numbersep=5pt,                  
+  backgroundcolor=\color{white},  
+  showspaces=false,               
+  showstringspaces=false,         
+  showtabs=false,               
+  tabsize=2,                      
+  captionpos=b,                  
+  breaklines=true,               
+  breakatwhitespace=true,     
+  title=\lstname,             
+}
+\lstinputlisting{characterSubstitution.c}
+
+\section*{4) Observations}
+It's easy to note how short the text is, so the percentages are not that accurate. But there are hints very useful to adjust the aim and make a better choice about the character substitution to operate in order to get a correctly working decryption algorithm. Here is the result of first attempt decryption (sounds like a Queen song to me):\\ 
+
+\begin{tcolorbox} [title=plaintext.txt]
+BUDDY YOULRE A BOY MAKE A BNG TONCE PSAYNTL NT WHE CWREEW GOTTA BE A BNG MAT COME DAY YOU GOW MUD OT YOL VAFE YOU BNG DNCGRAFE KNFKNTL YOUR FAT ASS OIER WHE PSAFE CNTGNTLL
+\end{tcolorbox}
+
+\end{document}

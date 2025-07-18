@@ -1,0 +1,24 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\title{Cybersecurity - Homework \#9}
+\author{Vlad Turno (1835365)}
+\usepackage{listings}
+
+\begin{document}
+
+\maketitle
+
+\section*{1) Shamir's Secret Sharing}
+To complete this homework must be kept in mind what is this cryptographic algorithm and how it works. Shamir's sharing protocol's modality is to divide some secret information into different segments using a polynomial function; in that way an intruder must have a significant number of segments to have a chance of reconstructing the original message. The receiver can reconstruct the original message combining the segments with polynomial interpolation (Lagrangian).
+
+\section*{2) Generating Segments}
+First step is to choose a prime number (p) larger than the message. in case of rolling dice (k dices with faces numbered 1-6) the minimum prime number must be k times the message (3 bits are necessary to store an integer in interval 1-6).
+Then define m as the minimum number of segments the receiver must have to reconstruct the message, and a polynomial P having m-1 degree with random coefficients a1...am.
+The grade 0 term of P will be our secret message.
+Segments can be computed by calculating the value of P in different not-null points and will consist in a pair (xn,P(xn)). Yes, i know this could be beautifully written using LateX, but for only 2 (two) miserable points on the final score and over 10 homeworks I won't do all of this effort, sorry.
+
+\section*{3) Message Reconstruction}
+Now, the segments will be distributed between the players, in this case Alice and Bob, and to reconstruct P and discover the known term a.k.a. the secret message, A (or B) must have at least m of them to operate Lagrange interpolation. To make sure that nor A or B are cheating over the various single games of a match, they also must store the partial score (sum of results of previous games, and it must be hashed to ensure that those values won't be subject to further changes.
+Another way to ensure an anti-cheat mechanism could be to add a timestamp to every dice roll and then hash the pair (dice roll, timestamp).
+
+\end{document}

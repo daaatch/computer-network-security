@@ -1,0 +1,53 @@
+\documentclass{article}
+
+\title{Cybersecurity - Homework \#2}
+\author{Vlad Turno (1835365)}
+\usepackage{tcolorbox}
+\usepackage{listings}
+\usepackage{graphicx}
+
+\begin{document}
+
+\maketitle
+
+\section*{1) Introduction}
+In cryptography a block cipher is an algorithm that operates iterating over blocks of bits having a fixed length. In this homework there will be a performance analysis over three different CBC algorithms (AES, Aria and Camellia) all using a symmetric 128-bit key to encrypt and decrypt some files.
+
+\section*{2) Performance Analysis}
+With a simple but quite not short C program it is possible to create some files having a specified dimension (1KB, 10KB and 1MB) alongside with a random generated 128-bit key and by using some functions from the OpenSSL library we can encode and decode stuff using the cpu clock to calculate the operation time.\\
+
+\lstset{
+  language=C,                     
+  numbers=left,                
+  stepnumber=1,                       
+  numbersep=5pt,                  
+  backgroundcolor=\color{white},  
+  showspaces=false,               
+  showstringspaces=false,         
+  showtabs=false,               
+  tabsize=2,                      
+  captionpos=b,                  
+  breaklines=true,               
+  breakatwhitespace=true,     
+  title=\lstname,             
+}
+\lstinputlisting{comparator.c}
+
+\section*{3) Observations}
+Now we take the results from our C program and we plot them into a chart to visualize better the results. It's easy to note how all the algorithms performs similarly over the small files (1-10kb) but how things change drastically when they work with a slightly bigger file (1mb)\\
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\textwidth]{Encryption.png}
+  \caption{}
+  \label{fig:enc}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\textwidth]{Decryption.png}
+  \caption{}
+  \label{fig:enc}
+\end{figure}
+
+\end{document}

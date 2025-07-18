@@ -1,0 +1,140 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\title{Cybersecurity - Homework \#8}
+\author{Vlad Turno (1835365)}
+\usepackage{listings}
+\usepackage{minted}
+
+\begin{document}
+
+\maketitle
+
+\section*{1) Existing Configuration}
+I'm considering a Debian Linux machine, so iptables is installed by default. First of all check, if existing, the current configuration via the following command\\
+
+\begin{minted}{bash}
+-----------------------------------------------------------------------
+$ sudo iptables -L -v -n
+-----------------------------------------------------------------------
+Chain INPUT (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source      destination         
+
+Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source      destination         
+
+Chain OUTPUT (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source      destination   
+-----------------------------------------------------------------------
+\end{minted}
+
+\section*{2) Possible scenarios}
+Default policies can be modified in order to accept or drop traffic in the 3 possible chains\\
+
+\begin{minted}{bash}
+-----------------------------------------------------------------------
+$ sudo iptables -P INPUT ACCEPT
+$ sudo iptables -P FORWARD DROP
+$ sudo iptables -P OUTPUT DROP
+$ sudo iptables -L -v -n
+-----------------------------------------------------------------------
+Chain INPUT (policy ACCEPT 44 packets, 6498 bytes)
+ pkts bytes target     prot opt in     out     source       destination         
+
+Chain FORWARD (policy DROP 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source       destination         
+
+Chain OUTPUT (policy DROP 35 packets, 4236 bytes)
+ pkts bytes target     prot opt in     out     source       destination  
+-----------------------------------------------------------------------
+\end{minted}
+
+\subsection*{2.1) First Scenario}
+First thing that could be done is to deny remote shell connections by blocking traffic on SSH port (by default is 22)\\
+
+\begin{minted}{bash}
+-----------------------------------------------------------------------
+$ sudo iptables -A INPUT -p tcp --dport 22 -j DROP
+$ sudo iptables -L -v -n
+-----------------------------------------------------------------------
+Chain INPUT (policy ACCEPT 48 packets, 8266 bytes)
+ pkts bytes target     prot opt in     out     source       destination         
+    0     0 DROP       6    --  *      *       0.0.0.0/0    0.0.0.0/0        tcp dpt:22
+
+Chain FORWARD (policy DROP 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source       destination         
+
+Chain OUTPUT (policy DROP 265 packets, 39919 bytes)
+ pkts bytes target     prot opt in     out     source       destination  
+-----------------------------------------------------------------------
+\end{minted}
+
+\subsection*{2.2) Second Scenario}
+Second thing that could be done is to consent HTTP and HTTPS traffic (ports 80 and 443)\\
+
+\begin{minted}{bash}
+-----------------------------------------------------------------------
+$ sudo iptables -A FORWARD -p tcp --dport 80 -j ACCEPT
+$ sudo iptables -A FORWARD -p tcp --dport 443 -j ACCEPT
+$ sudo iptables -A OUTPUT -p tcp --dport 80 -j ACCEPT
+$ sudo iptables -A OUTPUT -p tcp --dport 443 -j ACCEPT
+$ sudo iptables -L -v -n
+-----------------------------------------------------------------------
+Chain INPUT (policy ACCEPT 109 packets, 15347 bytes)
+ pkts bytes target     prot opt in     out     source         destination         
+    0     0 DROP       6    --  *      *       0.0.0.0/0      0.0.0.0/0      tcp dpt:22
+    0     0 ACCEPT     6    --  *      *       0.0.0.0/0      0.0.0.0/0      tcp dpt:80
+    0     0 ACCEPT     6    --  *      *       0.0.0.0/0      0.0.0.0/0      tcp dpt:443
+    4   260            0    --  *      *       0.0.0.0/0      0.0.0.0/0           
+
+Chain FORWARD (policy DROP 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source         destination         
+    0     0 ACCEPT     6    --  *      *       0.0.0.0/0      0.0.0.0/0      tcp dpt:80
+    0     0 ACCEPT     6    --  *      *       0.0.0.0/0      0.0.0.0/0      tcp dpt:443
+
+Chain OUTPUT (policy DROP 5499 packets, 382K bytes)
+ pkts bytes target     prot opt in     out     source         destination         
+    0     0 ACCEPT     6    --  *      *       0.0.0.0/0      0.0.0.0/0      tcp dpt:80
+    0     0 ACCEPT     6    --  *      *       0.0.0.0/0      0.0.0.0/0      tcp dpt:443
+-----------------------------------------------------------------------
+\end{minted}
+
+\subsection*{2.3) Third Scenario}
+Last thing could be allow localhost traffic for inter-system communication and delete some dumb chains as output and forward drop\\
+
+\begin{minted}{bash}
+-----------------------------------------------------------------------
+$ sudo iptables -A INPUT -i lo -j ACCEPT
+$ sudo iptables -A OUTPUT -o lo -j ACCEPT
+$ sudo iptables -P OUTPUT ACCEPT
+$ sudo iptables -P FORWARD ACCEPT
+$ sudo iptables -S
+-----------------------------------------------------------------------
+-P INPUT ACCEPT
+-P FORWARD ACCEPT
+-P OUTPUT ACCEPT
+-A INPUT -p tcp -m tcp --dport 22 -j DROP
+-A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
+-A INPUT -p tcp -m tcp --dport 443 -j ACCEPT
+-A INPUT
+-A INPUT -p tcp -m tcp --dport 443 -j ACCEPT
+-A INPUT -i lo -j ACCEPT
+-A FORWARD -p tcp -m tcp --dport 80 -j ACCEPT
+-A FORWARD -p tcp -m tcp --dport 443 -j ACCEPT
+-A OUTPUT -p tcp -m tcp --dport 80 -j ACCEPT
+-A OUTPUT -p tcp -m tcp --dport 443 -j ACCEPT
+-A OUTPUT -o lo -j ACCEPT
+-----------------------------------------------------------------------
+\end{minted}
+
+\section*{3) Saving Configurations}
+Since iptables configuration will be discarded after reboot it can be saved and loaded on boot via iptables-persistent.To restore a certain configuration i can save it on a .txt file and load by using the following command\\
+
+\begin{minted}{bash}
+-----------------------------------------------------------------------
+$ sudo iptables-persistent save
+$ sudo iptables-save > $PATH_TO_CONFIGURATION_FILE/iptables_config.txt
+$ sudo iptables-restore < $PATH_TO_CONFIGURATION_FILE/iptables_config.txt
+-----------------------------------------------------------------------
+\end{minted}
+
+\end{document}

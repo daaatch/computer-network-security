@@ -1,0 +1,55 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\title{Cybersecurity - Homework \#5}
+\author{Vlad Turno (1835365)}
+\usepackage{tcolorbox}
+
+\begin{document}
+
+\maketitle
+
+\section*{1) First Step}
+First of all I try to verify the signature by using the "smime" command in OpenSSL. After renaming the file "eIDAS Login/ secure online access to EU public services.pdf.p7m" to "document.pdf.p7m" to be less tedious to work with, I launch the following command and get the following output.\\
+
+\begin{tcolorbox} [title=OpenSSL dialogue box]
+openssl smime -in document.pdf.p7m -inform DER -verify -CAfile CA.pem\\
+
+Error loading file CA.pem
+4017E084457F0000:error:80000002:system library:BIO_new_file:No such file or directory:../crypto/bio/bss_file.c:67:calling fopen(CA.pem, r)
+4017E084457F0000:error:10000080:BIO routines:BIO_new_file:no such file:../crypto/bio/bss_file.c:75:
+4017E084457F0000:error:05880002:x509 certificate routines:X509_load_cert_crl_file_ex:system lib:../crypto/x509/by_file.c:228:
+\end{tcolorbox}
+
+\section*{2) Second Step}
+So, apparently, the CA.pem file (the certificate of authority in .pem format used to verify the authenticity of digital signatures by giving the public key) is missing and I don't know if is not on my laptop or is unknown to OpenSSL. In order to verify the signature I have to obtain one by downloading it from the CIESign website.
+
+After managing to download the Root CA file in .cer i have to convert in in .pem before proceeding with the verification. I can do it via OpenSSL using the following command:\\
+
+\begin{tcolorbox} [title=OpenSSL dialogue box]
+openssl x509 -in NationalrootCAfortheItalianElectronicIdentityCard.cer -out certificato.pem -outform PEM
+\end{tcolorbox}
+
+\section*{3) Third Step}
+Now I launch again the smime command in OpenSSL using the certificate.pem I converted before (and adding purpose because else it doesn't work). The verification turns succesful\\
+
+\begin{tcolorbox} [title=OpenSSL dialogue box]
+openssl smime -in document.pdf.p7m -inform DER -verify -CAfile certificato.pem -purpose any\\
+
+trailer\\
+<< /Size 122 /Root 80 0 R /Info 121 0 R /ID [ <1719ef642771633da01c106958eca2d7>
+<1719ef642771633da01c106958eca2d7> ] >>\\
+startxref\\
+249308\\
+Verification successful
+\end{tcolorbox}
+
+\section*{4) Fourth Step}
+I now proceed to extract the original pdf file and the certificates by using those commands. The extracted document is a 5 page guideline about eIDAS\\
+
+\begin{tcolorbox} [title=OpenSSL dialogue box]
+openssl smime -in document.pdf.p7m -inform DER -verify -CAfile certificato.pem -purpose any -out document.pdf\\
+
+openssl pkcs7 -inform DER -in document.pdf.p7m -print_certs -out cert.pem\\
+\end{tcolorbox}
+
+\end{document}

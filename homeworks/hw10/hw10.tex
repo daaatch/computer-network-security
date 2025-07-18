@@ -1,0 +1,21 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\title{Cybersecurity - Homework \#10}
+\author{Vlad Turno (1835365)}
+\usepackage{listings}
+
+\begin{document}
+
+\maketitle
+
+\section*{1) Shamir's Secret Sharing}
+This algorithm is based on polynomial interpolation and allows a secret message to be divided into parts, later distributed between participants. The message can be reconstructed only when given a certain minimum number of parts (later threshold).
+The secret message is then encoded into the known term of a polynomial P. P is cool because the various segments corresponds to certain values of P. The idea is that by having a certain number (more than threshold) of segments, P can be retrieved via Lagrangian interpolation, along with the known term corresponding to the original secret message. 
+
+\section*{2) Intersection of Contacts}
+Alice and Bob have a list of contacts each (CA and CB) and they want to compute the intersection between CA and CB in a way that there is a sort of privacy preserving mechanism such that Alice doesn't know all of CB (except for the contacts in CA) and vice versa. 
+Now here's the tricky part: A and B will compute EVERY possible subset permutation for their contact list (how many could they be? A hundred? A thousand?) and hash all the resulting subset partitions, then share it with the other one. Then it's time to compare the received hashed lists, seeking for the one that matches one of the hashed sub-partitions previously computed.
+In this way A (or B) will know if it exists a subset in B (or A) contacts that matches a subset in their own contacts, if yes they will know which subset, but all without knowing what are the subsets containing contacts that are not in common. 
+It's heavy computing in case of many many contacts but it ensures privacy. Don't know if it's the optimal solution but sure it works secure. Obviously this could be done also via Shamir's secret sharing algorithm by sharing every contact and seeing which one(s) can be computed but this methodology has already been used in the previous homework and this time I wanted to try something different. 
+
+\end{document}

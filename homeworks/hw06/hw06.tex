@@ -1,0 +1,83 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\title{Cybersecurity - Homework \#6}
+\author{Vlad Turno (1835365)}
+\usepackage{tcolorbox}
+\usepackage{listings}
+
+\begin{document}
+
+\maketitle
+
+\section*{1) Introduction}
+Password Derived Moduli (following PDM) is a protocol designed to improve the password authentication by generating keys based on user's password and using them for authentication. Augmentation in PDM consists in some techniques to improve security, such as performing mutual authentication where both parts have to verify each other's identity.\\
+
+\section*{2) PDM Example}
+Now, by choosing three different user-friendly passwords (dictionary-ish words), a pinch of salt and a key derivation function (such as PBKDF2) I derive some keys, making 100 1000 and 10000 iterations. Here is the C program used:\\ 
+
+\lstset{
+  language=C,                     
+  numbers=left,                
+  stepnumber=1,                       
+  numbersep=5pt,                  
+  backgroundcolor=\color{white},  
+  showspaces=false,               
+  showstringspaces=false,         
+  showtabs=false,               
+  tabsize=2,                      
+  captionpos=b,                  
+  breaklines=true,               
+  breakatwhitespace=true,     
+  title=\lstname,             
+}
+\lstinputlisting{hw06keygen.c}
+
+\section*{2) Derived Keys}
+This is the output. I included, for each generated key, the Shannon Entropy computed with an online tool. As it can be noted, the values are very very close (range between 3.81 and 3.89) for each password and for each number of iteration performed, so a diagram of the results would not be very interesting as it won't show any difference in the various parameters (except from input and number of iterations, of course).\\
+
+Clear password: password\\
+Number of iterations: 100\\
+Derived key: 0b28b82a9f0c193266c14e336815942fdfdf05f8b14c637bc6ca5ffb6f72dd55\\
+Entropy: 3.87\\
+
+Clear password: password\\
+Number of iterations: 1000\\
+Derived key: 83425de5c4530b7f89f17d260b6b4e61955db7c97212e8ad67fe08a309acc23a\\
+Entropy: 3.89\\
+
+Clear password: password\\
+Number of iterations: 10000\\
+Derived key: 940eece8fc97b01b2e86a92dc7e939c395811b1c7a825e220f3dddad76d57f2c\\
+Entropy: 3.88\\
+
+Clear password: strongPassword\\
+Number of iterations: 100\\
+Derived key: dbe24b3363116ff1e3177f950829bb19edecc93fa924f5826582f08456a28337\\
+Entropy: 3.89\\
+
+Clear password: strongPassword\\
+Number of iterations: 1000\\
+Derived key: 360906c2a5d98d8430cdd495f9514df06ea96ba58134e34e082ecb0626022c9e\\
+Entropy: 3.81\\
+
+Clear password: strongPassword\\
+Number of iterations: 10000\\
+Derived key: cd976c7e3b62a1bc16056200b5ec78d5a9780b91b1bc4cfae11783bd3af76985\\
+Entropy: 3.87\\
+
+Clear password: verySecretPassword\\
+Number of iterations: 100\\
+Derived key: dee99e21737aebdd457df6d83189ffe0a3d2acc819a2aef03d395e34f264eb51\\
+Entropy: 3.86\\
+
+Clear password: verySecretPassword\\
+Number of iterations: 1000\\
+Derived key: 3764f2f035da1e4fa732c64311b27a95931b996b9c0522baeff90656cfabc9eb\\
+Entropy: 3.81\\
+
+Clear password: verySecretPassword\\
+Number of iterations: 10000\\
+Derived key: d52a2890bf458cf8699003886cb111e896b38f0fe94a686fd77034523f7318f9\\
+Entropy: 3.84\\
+
+\end{document}
